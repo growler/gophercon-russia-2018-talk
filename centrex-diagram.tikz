@@ -1,0 +1,59 @@
+\begin{tikzpicture}[
+  cisco icon/.style args={#1,#2}{
+    node contents={\includegraphics[keepaspectratio, width=6ex]{cisco/#1.pdf}},%
+    label={[label position=below, shift={(0,1ex)}, align=center]#2}%
+  }]%
+  \definecolor{oam}{rgb}{0.000,0.180,1.000}
+  \definecolor{pnet}{rgb}{0.663,0.482,0.298}
+  \node (router) [cisco icon={router,}];
+  \node (lb1) [above right=3cm and 3cm of router, cisco icon={lb,LB}];
+  \node (lb2) [below=1.5cm of lb1, cisco icon={lb,LB}];
+  \node (fe1) [right=2cm of lb1, cisco icon={fe,Front End 1}];
+  \node (fe2) [right=2cm of lb2, cisco icon={fe,Front End N}];
+  \node (mg1) [below=1.5cm of fe2, cisco icon={mg,Media\\Processor 1}];
+  \node (mg2) [below=1.5cm of mg1, cisco icon={mg,Media\\Processor N}];
+  \node (be1) [right=2cm of fe2, cisco icon={be,Back End 1}];
+  \node (be2) [right=2cm of mg1, cisco icon={be,Back End N}];
+  \node at ($(fe1.south)!0.7!(fe2.north)$) {\Large\ldots};
+  \node at ($(be1.south)!0.6!(be2.north)$) {\Large\ldots};
+  \node at ($(mg1.south)!0.8!(mg2.north)$) {\Large\ldots};
+  \path let \p1=($(lb1.west)!0.33!(router.east)$),
+            \p2=($(lb1.east)!0.5!(fe1.west)$),
+            \p3=($(fe1.east)!0.5!(be1.west)$) in
+        coordinate (oamn) at ($(\p3|-fe1.north) + (0,.2cm)$)
+        coordinate (oams) at ($(\p3|-mg2.south) - (0,.8cm)$)
+        coordinate (pnet1n) at (\p2|-oamn)
+        coordinate (pnet1s) at ($(\p2|-fe2.south) - (0,.5cm)$)
+        coordinate (pnet2n) at (\p1|-oamn)
+        coordinate (pnet2s) at (\p1|-pnet1s)
+        coordinate (pnet3n) at ($(\p2|-mg1.north) + (0,.2cm)$)
+        coordinate (pnet3s) at (\p2|-oams);
+  \draw[very thick, oam]
+        (oamn) -- (oams)
+        (fe1.east) -- (oamn|-fe1.east)
+        (fe2.east) -- (oamn|-fe2.east)
+        (be1.west) -- (oamn|-be1.west)
+        (be2.west) -- (oamn|-be2.west)
+        (mg1.east) -- (oamn|-mg1.east)
+        (mg2.east) -- (oamn|-mg2.east);
+  \draw[very thick, pnet]
+        let \p1=($(pnet2n)!0.5!(pnet2s)$),
+            \p2=($(pnet3n)!0.5!(pnet3s)$) in
+        (pnet1n) -- (pnet1s)
+        (pnet2n) -- (pnet2s)
+        (pnet3n) -- (pnet3s)
+        (router.north) -- (router.north|-\p1) -- node[black,above]{Signalling} node[black,below]{(SIP)} (\p1)
+        (router.south) -- (router.south|-\p2) -- node[black,above]{Media} node[black,below]{(RTP)} (\p2)
+        (lb1.west) -- (pnet2n|-lb1.west)
+        (lb2.west) -- (pnet2n|-lb2.west)
+        (lb1.east) -- (pnet3n|-lb1.east)
+        (lb2.east) -- (pnet3n|-lb2.east)
+        (fe1.west) -- (pnet1n|-fe1.west)
+        (fe2.west) -- (pnet1n|-fe2.west)
+        (mg1.west) -- (pnet1n|-mg1.west)
+        (mg2.west) -- (pnet1n|-mg2.west);
+  \draw [<->,>=Stealth, very thick] (router.west) -- ++(-2cm,0);
+\end{tikzpicture}
+%%% Local Variables:
+%%% mode: latex
+%%% End:

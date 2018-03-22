@@ -1,0 +1,91 @@
+% a poor man's sequence diagram
+\usetikzlibrary{arrows,arrows.meta,calc,positioning,backgrounds}
+\tikzset{>={Stealth[length=1.2ex, width=.6ex]}}
+
+\makeatletter
+\newenvironment{seqdiag}[2][]{%
+\definecolor{diagramcolor}{rgb}{0.62,0.00,0.184}%
+\pgfkeys{/sd/.cd,%
+  height/.initial=9,%
+  #1}%
+% \msg{Position}{From}{To}{Comment}
+\newcommand{\msg}[4]{%
+  \def\@srcw{\csname line@width@##2\endcsname}%
+  \def\@dstw{\csname line@width@##3\endcsname}%
+  \draw let \p1=(line@origin@##2),%
+            \p2=(line@origin@##3),%
+            \p3=($(curpos)+(0,##1)$),
+            \n1={(\x1 < \x2) ? (\x1 + \@srcw) : (\x1 - \@srcw)},%
+            \n2={(\x1 < \x2) ? (\x2 - \@dstw) : (\x2 + \@dstw)}%
+        in%
+            [->,draw=diagramcolor, line cap=rect, line width=0.5pt]%
+            (\n1,\y3) -- node[midway, fill=white] {##4} (\n2,\y3)%
+            coordinate (curpos) at (\p3);%
+}%
+\newcommand{\proc}[4]{%
+  \draw let
+        \p1=($(line@origin@##2)-(2ex,0)$),
+        \p2=($(line@origin@##3)+(2ex,0)$),
+        \p3=($(curpos) + (0,##1)$)
+   in
+        [draw, line width=0.5pt, double distance=0.5ex]
+        (\x1,\y3) -- node[midway, fill=white] {##4} (\x2,\y3)
+        coordinate (curpos) at (\p3);%
+}%
+\newcommand{\enclose}[3]{
+  \begin{scope}[on background layer]
+    \path let \p1=(current bounding box.north), \p2=(current bounding box.south) in
+          [draw, dotted, thin] (##1,\y1) rectangle (##2,\y2)
+          (##1, \y1) -- node[below] {##3} (##2,\y1);
+  \end{scope}
+}
+% \instance{position}{Name}{Comment}
+\newcommand{\instance}[3]{%
+  \begin{scope}[yscale = 1, local bounding box=inst@##2]%
+    \node[draw] at (##1cm, 0) {##2};%
+  \end{scope}%
+  \path let \p1=(inst@##2.south) in coordinate (line@origin@##2) at (\x1, 2ex);%
+}
+% \actor{position}{name}{comment}
+\newcommand{\actor}[3]{%
+  \begin{scope}[yscale = 1, inner sep=0, local bounding box=inst@##2]%
+    \node (name) at (##1cm, 0) {##2};%
+    \node[above=3pt of name] {##3};%
+  \end{scope}%
+  \path let \p1=(inst@##2.south) in coordinate (line@origin@##2) at (\x1, 2ex);%
+}%
+\newcommand{\eventline}[1]{
+  \expandafter\def\csname line@width@##1\endcsname{0.25pt}%
+  \pgfkeysgetvalue{/sd/height}{\@sd@height}%
+  \path let \p1=(line@origin@##1)
+        in
+            coordinate (origin) at (\p1)
+            coordinate (finish) at ($(\p1) + (0,\@sd@height)$);%
+  \draw[draw=diagramcolor, line width=0.5pt, line cap=rect, dashed] (origin) -- (finish);%
+}%
+\newcommand{\eventthread}[3]{
+  \expandafter\def\csname line@width@##1\endcsname{2.25pt}%
+  \pgfkeysgetvalue{/sd/height}{\@sd@height}%
+  \path let \p1=(line@origin@##1)
+        in
+            coordinate (origin) at (\p1)
+            coordinate (start) at ($(\p1) + (0,##2cm)$)
+            coordinate (stop) at ($(\p1) + (0,##3cm)$)
+            coordinate (finish) at ($(\p1) + (0,\@sd@height)$)
+            coordinate (left) at ($(start) - (2pt,0)$)
+            coordinate (right) at ($(stop) + (2pt,0)$);
+  \draw[diagramcolor, line width=0.5pt, line cap=rect, dashed] (origin) -- (start);%
+  \draw[diagramcolor, line width=0.5pt] (left) rectangle (right);
+  \draw[diagramcolor, line width=0.5pt, line cap=rect, dashed] (stop) -- (finish);%
+}%
+\begin{tikzpicture}[yscale=-1]%
+  \path coordinate (curpos) at (0,2ex);
+  #2%
+}{%
+\end{tikzpicture}%
+}
+\makeatother
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
