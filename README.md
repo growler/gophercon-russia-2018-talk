@@ -1,6 +1,6 @@
 # Talk for GopherCon Russia 2018
 
-Keynotes for my talk at [GopherCon Russia 2018](https://www.gophercon-russia.ru/en)
+[Keynotes](gophercon-russia-2018-itoolabs-talk.pdf) for my talk at [GopherCon Russia 2018](https://www.gophercon-russia.ru/en)
 
 # Gophers
 
