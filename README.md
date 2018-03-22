@@ -15,6 +15,7 @@ GopherCon Russia Gopher was designed by GopherCon Russia team.
 # Special thanks
 
 - To [Nikita Prokopov](https://github.com/tonsky) for his brilliant [FiraCode](https://github.com/tonsky/FiraCode) font based on Mozilla's [Fira](https://github.com/mozilla/Fira) font family.
+- To [Randall Munroe](https://en.wikipedia.org/wiki/Randall_Munroe) for (XKCD)[https://c.xkcd.com/random/comic/] comics (and strip [xkcd://1403](https://xkcd.com/1403/) used in this keynotes)
 
 # TODO
 
