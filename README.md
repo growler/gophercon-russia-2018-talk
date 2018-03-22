@@ -18,5 +18,5 @@ GopherCon Russia Gopher was designed by GopherCon Russia team.
 
 # TODO
 
-- add a link to video
+- add link to the video (as soon as available)
 - add transcription (at least in Russian)
